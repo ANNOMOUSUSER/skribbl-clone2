@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Skribbl.io Clone</title>
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #333;
+        }
+
+        /* Pre-game admin panel styles */
+        .admin-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-header h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .settings-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .settings-section h3 {
+            color: #4a5568;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .setting-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .setting-group label {
+            font-weight: bold;
+            min-width: 120px;
+            color: #555;
+        }
+
+        .setting-group input {
+            padding: 0.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 5px;
+            font-size: 1rem;
+            width: 100px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .btn-warning {
+            background: #ed8936;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #dd6b20;
+        }
+
+        /* Gaming phase styles (similar to index.html) */
+        body.gaming {
+            background: #2d3748;
+            color: white;
+        }
+
+        body.gaming .admin-container {
+            display: none;
+        }
+
+        .game-container {
+            display: none;
+            flex: 1;
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        body.gaming .game-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-header {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .game-info {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .game-info div {
+            text-align: center;
+        }
+
+        .game-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #a0aec0;
+        }
+
+        .game-info span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .admin-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .game-main {
+            display: flex;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .canvas-area {
+            flex: 2;
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .word-display {
+            text-align: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #4a5568;
+            border-radius: 8px;
+            color: white;
+        }
+
+        .word-display h2 {
+            font-size: 2rem;
+            letter-spacing: 0.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .word-hint {
+            font-size: 1.2rem;
+            color: #a0aec0;
+        }
+
+        #canvas {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            cursor: crosshair;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .players-panel {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            flex: 1;
+        }
+
+        .players-panel h3 {
+            margin-bottom: 1rem;
+            color: #a0aec0;
+            font-size: 1.1rem;
+        }
+
+        .player-list, .spectator-list {
+            list-style: none;
+        }
+
+        .player-item, .spectator-item {
+            background: rgba(255,255,255,0.1);
+            margin-bottom: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .player-item.current-drawer {
+            background: rgba(72, 187, 120, 0.3);
+            border: 2px solid #48bb78;
+        }
+
+        .player-name {
+            font-weight: bold;
+        }
+
+        .player-score {
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+
+        .chat-panel {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-panel h3 {
+            margin-bottom: 1rem;
+            color: #a0aec0;
+            font-size: 1.1rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+
+        .chat-message {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .chat-message.admin {
+            background: rgba(237, 137, 54, 0.3);
+            border-left: 4px solid #ed8936;
+        }
+
+        .chat-message.spectator {
+            background: rgba(102, 126, 234, 0.3);
+            border-left: 4px solid #667eea;
+        }
+
+        .chat-message.correct {
+            background: rgba(72, 187, 120, 0.3);
+            border-left: 4px solid #48bb78;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .status-messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .status-message {
+            background: #48bb78;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .status-message.error {
+            background: #f56565;
+        }
+
+        .status-message.warning {
+            background: #ed8936;
+        }
+
+        @media (max-width: 768px) {
+            .game-main {
+                flex-direction: column;
+            }
+            
+            .game-info {
+                gap: 1rem;
+            }
+            
+            .admin-controls {
+                width: 100%;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Pre-game Admin Panel -->
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>🎨 Admin Panel</h1>
+            <p>As admin, you'll join as a spectator with full control powers. Configure your game settings before creating the room.</p>
+        </div>
+
+        <div class="settings-section">
+            <h3>Game Settings</h3>
+            <div class="setting-group">
+                <label>Max Rounds:</label>
+                <input type="number" id="maxRounds" value="3" min="1" max="10">
+            </div>
+            <div class="setting-group">
+                <label>Round Time:</label>
+                <input type="number" id="roundTime" value="60" min="30" max="120">
+                <span>seconds</span>
+            </div>
+            <div class="setting-group">
+                <label>Total Time:</label>
+                <input type="number" id="totalTime" value="15" min="5" max="30">
+                <span>minutes</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="adminUsername">Admin Username:</label>
+            <input type="text" id="adminUsername" placeholder="Enter your admin username" maxlength="20">
+        </div>
+
+        <div class="form-group">
+            <input type="text" id="roomIdInput" placeholder="Enter Room ID to join existing room" maxlength="4">
+        </div>
+
+        <div style="text-align: center;">
+            <button class="btn btn-primary" onclick="createRoom()">Create New Room</button>
+            <button class="btn btn-success" onclick="joinRoom()">Join Existing Room</button>
+        </div>
+
+        <div id="roomInfo" class="hidden" style="margin-top: 2rem; padding: 1rem; background: #e8f5e8; border-radius: 8px;">
+            <h3>Room Created Successfully!</h3>
+            <p>Room ID: <strong id="displayRoomId"></strong></p>
+            <p>Share this ID with players to join your game.</p>
+        </div>
+    </div>
+
+    <!-- Gaming Interface -->
+    <div class="game-container">
+        <div class="game-header">
+            <div class="game-info">
+                <div>
+                    <h3>Round</h3>
+                    <span id="currentRound">1</span>/<span id="maxRoundsDisplay">3</span>
+                </div>
+                <div>
+                    <h3>Time Left</h3>
+                    <span id="timeLeft">60</span>s
+                </div>
+                <div>
+                    <h3>Room ID</h3>
+                    <span id="gameRoomId">----</span>
+                </div>
+            </div>
+            <div class="admin-controls">
+                <button class="btn btn-warning" onclick="skipTurn()">Skip Turn</button>
+                <button class="btn btn-danger" onclick="endGame()">End Game</button>
+                <button class="btn btn-danger" onclick="kickAllPlayers()">Kick All</button>
+            </div>
+        </div>
+
+        <div class="game-main">
+            <div class="canvas-area">
+                <div class="word-display">
+                    <h2 id="currentWord">Waiting for game...</h2>
+                    <div class="word-hint" id="wordHint"></div>
+                </div>
+                <canvas id="draw-canvas" width="700" height="400"></canvas>
+            </div>
+
+            <div class="sidebar">
+                <div class="players-panel">
+                    <h3>Players (<span id="playerCount">0</span>)</h3>
+                    <ul id="playersList" class="player-list"></ul>
+                    
+                    <h3 style="margin-top: 1.5rem;">Spectators (<span id="spectatorCount">0</span>)</h3>
+                    <ul id="spectatorsList" class="spectator-list"></ul>
+                </div>
+
+                <div class="chat-panel">
+                    <h3>Chat</h3>
+                    <div id="chatMessages" class="chat-messages"></div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." maxlength="100">
+                        <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Messages -->
+    <div id="statusMessages" class="status-messages"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+   <script>
+        const socket = io();
+        let currentRoomId = null;
+        let isAdmin = false;
+        let canvas = null;
+        let ctx = null;
+
+        // Initialize canvas with error checking
+        function initCanvas() {
+            canvas = document.getElementById('draw-canvas');
+            if (!canvas) {
+                console.error('Canvas element with id "draw-canvas" not found! Make sure <canvas id="draw-canvas"> exists in your HTML.');
+                showStatus('Canvas not found! Please check your HTML.', 'error');
+                return false;
+            }
+            
+            ctx = canvas.getContext('2d');
+            if (!ctx) {
+                console.error('Could not get 2D context from canvas.');
+                showStatus('Canvas context initialization failed!', 'error');
+                return false;
+            }
+            
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            console.log('Canvas initialized successfully');
+            return true;
+        }
+
+        // Canvas drawing functions with error checking
+        function drawLine(x1, y1, x2, y2, color, lineWidth) {
+            if (!ctx) {
+                console.error('Canvas context not available for drawing');
+                return;
+            }
+            ctx.strokeStyle = color || "#000";
+            ctx.lineWidth = lineWidth || 2;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+
+        function clearCanvas() {
+            if (!ctx || !canvas) {
+                console.error('Canvas not available for clearing');
+                return;
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Create room
+        function createRoom() {
+            const username = document.getElementById('adminUsername').value.trim();
+            if (!username) {
+                showStatus('Please enter an admin username', 'error');
+                return;
+            }
+
+            const settings = {
+                maxRounds: parseInt(document.getElementById('maxRounds').value) || 6,
+                roundTime: parseInt(document.getElementById('roundTime').value) || 60,
+                totalTime: parseInt(document.getElementById('totalTime').value) || 300
+            };
+
+            socket.emit('createRoom', {
+                username: username,
+                settings: settings,
+                isSpectator: true,
+                isAdmin: true
+            });
+        }
+
+        // Join room
+        function joinRoom() {
+            const username = document.getElementById('adminUsername').value.trim();
+            const roomId = document.getElementById('roomIdInput').value.trim().toUpperCase();
+            
+            if (!username) {
+                showStatus('Please enter an admin username', 'error');
+                return;
+            }
+            
+            if (!roomId) {
+                showStatus('Please enter a room ID', 'error');
+                return;
+            }
+
+            socket.emit('joinRoom', {
+                roomId: roomId,
+                username: username,
+                isSpectator: true,
+                isAdmin: true
+            });
+        }
+
+        // Admin actions
+        function skipTurn() {
+            socket.emit('adminSkipTurn');
+        }
+
+        function endGame() {
+            if (confirm('Are you sure you want to end the current game?')) {
+                socket.emit('adminEndGame');
+            }
+        }
+
+        function kickPlayer(playerId) {
+            if (confirm('Are you sure you want to kick this player?')) {
+                socket.emit('adminKickPlayer', playerId);
+            }
+        }
+
+        function kickAllPlayers() {
+            if (confirm('Are you sure you want to kick ALL players? This will end the current game.')) {
+                socket.emit('adminKickAll');
+            }
+        }
+
+        function startGame() {
+            const settings = {
+                maxRounds: parseInt(document.getElementById('maxRounds').value) || 6,
+                roundTime: parseInt(document.getElementById('roundTime').value) || 60,
+                totalTime: parseInt(document.getElementById('totalTime').value) || 300
+            };
+            socket.emit('startGame', settings);
+        }
+
+        // Chat functions
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (message) {
+                socket.emit('adminChatMessage', message);
+                input.value = '';
+            }
+        }
+
+        // Update UI functions
+        function updatePlayersList(players) {
+            const playersList = document.getElementById('playersList');
+            const playerCount = document.getElementById('playerCount');
+            
+            if (!playersList || !playerCount) return;
+            
+            playersList.innerHTML = '';
+            playerCount.textContent = players.length;
+            
+            players.forEach(player => {
+                const li = document.createElement('li');
+                li.className = 'player-item';
+                if (player.id === getCurrentDrawerId()) {
+                    li.classList.add('current-drawer');
+                }
+                
+                li.innerHTML = `
+                    <span class="player-name">${player.username}</span>
+                    <div>
+                        <span class="player-score">${player.score || 0}</span>
+                        <button class="btn btn-danger" style="margin-left: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.8rem;" onclick="kickPlayer('${player.id}')">Kick</button>
+                    </div>
+                `;
+                playersList.appendChild(li);
+            });
+        }
+
+        function updateSpectatorsList(spectators) {
+            const spectatorsList = document.getElementById('spectatorsList');
+            const spectatorCount = document.getElementById('spectatorCount');
+            
+            if (!spectatorsList || !spectatorCount) return;
+            
+            spectatorsList.innerHTML = '';
+            spectatorCount.textContent = spectators.length;
+            
+            spectators.forEach(spectator => {
+                const li = document.createElement('li');
+                li.className = 'spectator-item';
+                
+                const prefix = spectator.isAdmin ? '[ADMIN] ' : '[SPECTATOR] ';
+                li.innerHTML = `<span class="player-name">${prefix}${spectator.username}</span>`;
+                spectatorsList.appendChild(li);
+            });
+        }
+
+        function getCurrentDrawerId() {
+            return window.currentDrawerId || null;
+        }
+
+        function addChatMessage(data) {
+            const chatMessages = document.getElementById('chatMessages');
+            if (!chatMessages) return;
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+            
+            if (data.isAdmin) {
+                messageDiv.classList.add('admin');
+            } else if (data.isSpectator) {
+                messageDiv.classList.add('spectator');
+            }
+            
+            messageDiv.innerHTML = `<strong>${data.player}:</strong> ${data.message}`;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showStatus(message, type = 'success') {
+            const statusMessages = document.getElementById('statusMessages');
+            if (!statusMessages) {
+                console.log(`Status (${type}): ${message}`);
+                return;
+            }
+            
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status-message ${type}`;
+            statusDiv.textContent = message;
+            
+            statusMessages.appendChild(statusDiv);
+            
+            setTimeout(() => {
+                statusDiv.remove();
+            }, 5000);
+        }
+
+        function switchToGamingMode() {
+            document.body.classList.add('gaming');
+            if (!initCanvas()) {
+                showStatus('Canvas initialization failed! Make sure the canvas element exists.', 'error');
+            } else {
+                showStatus('Canvas ready for spectating', 'success');
+            }
+        }
+
+        // Socket event listeners
+        socket.on('roomCreated', (roomId) => {
+            currentRoomId = roomId;
+            const displayElement = document.getElementById('displayRoomId');
+            const gameElement = document.getElementById('gameRoomId');
+            const roomInfoElement = document.getElementById('roomInfo');
+            
+            if (displayElement) displayElement.textContent = roomId;
+            if (gameElement) gameElement.textContent = roomId;
+            if (roomInfoElement) roomInfoElement.classList.remove('hidden');
+            
+            showStatus('Room created successfully!', 'success');
+        });
+
+        socket.on('roomJoined', (data) => {
+            currentRoomId = data.roomId;
+            const gameElement = document.getElementById('gameRoomId');
+            if (gameElement) gameElement.textContent = data.roomId;
+            showStatus('Joined room successfully!', 'success');
+        });
+
+        socket.on('adminStatusUpdate', (data) => {
+            isAdmin = data.isAdmin;
+            if (isAdmin) {
+                switchToGamingMode();
+                showStatus('Admin privileges activated', 'success');
+            }
+        });
+
+        socket.on('playersUpdate', (players) => {
+            updatePlayersList(players);
+        });
+
+        socket.on('spectatorsUpdate', (spectators) => {
+            updateSpectatorsList(spectators);
+        });
+
+        socket.on('roundStart', (data) => {
+            window.currentDrawerId = data.drawer?.id;
+            
+            // Update UI elements safely
+            const updateElement = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value;
+            };
+            
+            updateElement('currentRound', data.round);
+            updateElement('maxRoundsDisplay', data.maxRounds);
+            updateElement('timeLeft', data.timeLeft);
+            updateElement('currentWord', data.word);
+            updateElement('wordHint', data.hint);
+            
+            // Clear canvas for new round
+            if (ctx) {
+                clearCanvas();
+            }
+            
+            showStatus(`Round ${data.round} started!`, 'success');
+        });
+
+        socket.on('wordReveal', (word) => {
+            const element = document.getElementById('currentWord');
+            if (element) element.textContent = word;
+        });
+
+        socket.on('timeUpdate', (timeLeft) => {
+            const element = document.getElementById('timeLeft');
+            if (element) element.textContent = timeLeft;
+        });
+
+        socket.on('roundEnd', (data) => {
+            showStatus(`Round ended! Word was: ${data.word}`, 'warning');
+            updatePlayersList(data.players);
+        });
+
+        socket.on('gameEnd', (data) => {
+            showStatus('Game ended!', 'warning');
+            const winner = data.winner;
+            if (winner) {
+                showStatus(`Winner: ${winner.username} with ${winner.score} points!`, 'success');
+            }
+        });
+
+        // Drawing events - FIXED with proper parameter handling and debugging
+        socket.on('drawingData', (data) => {
+            console.log('Drawing data received:', data); // Debug log
+            if (ctx) {
+                // Handle both possible parameter formats
+                if (data.x0 !== undefined) {
+                    // Format: x0, y0, x1, y1
+                    drawLine(data.x0, data.y0, data.x1, data.y1, data.color, data.lineWidth);
+                } else if (data.x1 !== undefined) {
+                    // Format: x1, y1, x2, y2
+                    drawLine(data.x1, data.y1, data.x2, data.y2, data.color, data.lineWidth);
+                }
+            } else {
+                console.error('Canvas context not available for drawing');
+            }
+        });
+
+        socket.on('clearCanvas', () => {
+            console.log('Clear canvas event received'); // Debug log
+            if (ctx) {
+                clearCanvas();
+            } else {
+                console.error('Canvas context not available for clearing');
+            }
+        });
+
+        // Chat events
+        socket.on('chatMessage', (data) => {
+            addChatMessage(data);
+        });
+
+        socket.on('correctGuess', (data) => {
+            addChatMessage({
+                player: '🎉 System',
+                message: `${data.player} guessed correctly! (+${data.score} points)`,
+                isCorrect: true
+            });
+            updatePlayersList(data.players);
+        });
+
+        // Admin action responses
+        socket.on('adminActionSuccess', (message) => {
+            showStatus(message, 'success');
+        });
+
+        socket.on('adminError', (message) => {
+            showStatus(message, 'error');
+        });
+
+        socket.on('adminAction', (data) => {
+            showStatus(data.action, 'warning');
+        });
+
+        // Error handling
+        socket.on('joinError', (message) => {
+            showStatus(message, 'error');
+        });
+
+        socket.on('startGameError', (message) => {
+            showStatus(message, 'error');
+        });
+
+        // Chat input enter key
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        sendChatMessage();
+                    }
+                });
+            }
+        });
+
+        // Add start game button functionality
+        function addStartGameButton() {
+            const adminControls = document.querySelector('.admin-controls');
+            if (!adminControls) return;
+            
+            const startBtn = document.createElement('button');
+            startBtn.className = 'btn btn-success';
+            startBtn.textContent = 'Start Game';
+            startBtn.onclick = startGame;
+            adminControls.insertBefore(startBtn, adminControls.firstChild);
+        }
+
+        // Initialize start game button when switching to gaming mode
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(addStartGameButton, 100);
+        });
+
+        // Initialize canvas immediately if element exists
+        document.addEventListener('DOMContentLoaded', () => {
+            // Try to initialize canvas immediately if it exists
+            const canvasElement = document.getElementById('draw-canvas');
+            if (canvasElement && !ctx) {
+                initCanvas();
+            }
+        });
+
+
+    </script>
+</body>
+</html>
